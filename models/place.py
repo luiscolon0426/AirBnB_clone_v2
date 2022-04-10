@@ -58,7 +58,11 @@ class Place(BaseModel, Base):
         @property
         def amenities(self):
             """ Getter """
-            return self.amenity_ids
+            amenitieslist = []
+            for amenity in models.storage.all(Amenity).values():
+                if amenity.id == self.amenity_ids:
+                    amenitieslist.append(amenity)
+            return amenitieslist
 
         @amenities.setter
         def amenities(self, obj):
