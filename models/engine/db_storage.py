@@ -26,7 +26,7 @@ class DBStorage:
         'State': State, 'City': City
     }
 
-    def __init__(self):
+    def __init__(self, user=None, passwd=None, host=None, db=None):
         
         user = getenv('HBNB_MYSQL_USER')
         passwd = getenv('HBNB_MYSQL_PWD')
@@ -39,7 +39,21 @@ class DBStorage:
 
     def all(self, cls=None):
         ''' IN BETA '''
-        self.__session = sessionmaker(bind=engine)
+        cls_dict = {}
+        if cls:
+            db = self.__session.query(cls).all()
+            for obj in db:
+                cls_dict[str(cls) + "." + obj.id] = obj
+        else:
+            for key, value in self.hbnb_classes.items():
+                try:
+                    db = self.__session.query(value).all()
+                except:
+                    pass
+                for obj in db:
+                    cls_dict[key + "." + obj.id] = obj
+
+        return cls_dict
 
     def new(self, obj):
         ''' add object to current db '''
